@@ -8,6 +8,7 @@ const {schemas} = require("../../models/contact");
 
 const router = express.Router()
 
+
 router.get('/', ctrl.listContacts);
 
 router.get('/:contactId', isValidId, ctrl.getContactById);
