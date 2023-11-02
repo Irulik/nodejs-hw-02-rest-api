@@ -29,13 +29,15 @@ const addSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
   // phone: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
-  phone: Joi.string().custom((value, helper) => {
+  phone: Joi.string().custom((value, helpers) => {
     if (!checkPhone(value)) {
-      return helpers.error("phone.invalidFormat", { message: "Please enter a phone number in the format (XXX) XXX-XXXX" });
+      return helpers.error('phone.invalidFormat', { message: 'Please enter a phone number in the format (XXX) XXX-XXXX' });
     }
     return value;
   }),
   favorite: Joi.boolean(),
+}).messages({
+  'phone.invalidFormat': '{{#message}}',
 });
 
 const updateFavoriteSchema = Joi.object({
