@@ -3,21 +3,26 @@ const Joi = require("joi");
 const { handleMongooseError } = require("../helpers");
 
 const contactSchema = new Schema({
-    name: {
-      type: String,
-      required: [true, 'Set name for contact'],
-    },
-    email: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
-    favorite: {
-      type: Boolean,
-      default: false,
-    },
-})
+  name: {
+    type: String,
+    required: [true, "Set name for contact"]
+  },
+  email: {
+    type: String
+  },
+  phone: {
+    type: String
+  },
+  favorite: {
+    type: Boolean,
+    default: false
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+    required: true
+  }
+});
 
 contactSchema.post("save", handleMongooseError);
 
@@ -31,25 +36,27 @@ const addSchema = Joi.object({
   // phone: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
   phone: Joi.string().custom((value, helpers) => {
     if (!checkPhone(value)) {
-      return helpers.message('Please enter a phone number in the format (XXX) XXX-XXXX');
+      return helpers.message(
+        "Please enter a phone number in the format (XXX) XXX-XXXX"
+      );
     }
     return value;
   }),
-  favorite: Joi.boolean(),
+  favorite: Joi.boolean()
 });
 
 const updateFavoriteSchema = Joi.object({
-   favorite: Joi.boolean().required(),
-})
+  favorite: Joi.boolean().required()
+});
 
 const schemas = {
   addSchema,
-  updateFavoriteSchema,
-} 
+  updateFavoriteSchema
+};
 
 const Contact = model("contact", contactSchema);
 
 module.exports = {
   Contact,
-  schemas,
-}
+  schemas
+};
