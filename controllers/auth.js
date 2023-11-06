@@ -22,8 +22,9 @@ const register = async (req, res) => {
 
     res.status(201).json({
         email: newUser.email,
-        name: newUser.name,
-    })    
+        subscription: newUser.subscription,
+    
+ })    
 }
 
 const login = async (req, res) => {
@@ -46,14 +47,19 @@ const login = async (req, res) => {
 
     res.json({
         token,
+        user: {
+            email: user.email,
+            subscription: user.subscription
+        }
     })
 }
 
 const getCurrent = async (req, res) => {
-    const { email } = req.user;
+    const { email, subscription } = req.user;
 
     res.json({
         email,
+        subscription
     })
 }
 
@@ -66,9 +72,19 @@ const logout = async (req, res) => {
     })
 }
 
+const subscription = async (req, res) => {
+    const { _id } = req.user;
+    const result = await User.findByIdAndUpdate(_id, req.body, { new: true });
+    if (!result) {
+        throw HttpError(404, "Not found")
+    }
+    res.status(200).json(result);
+};
+
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
+    subscription: ctrlWrapper(subscription),
 }
