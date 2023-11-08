@@ -98,20 +98,18 @@ const updateAvatar = async (req, res) => {
 
         const originalAvatar = await Jimp.read(uploadPath);
         originalAvatar.resize(250, 250).write(resultUpload); 
-        await fs.unlink(uploadPath); //видаляю тимчасовий файл
+        await fs.unlink(uploadPath); 
 
-        const avatarURL = path.join('public', 'avatars', filename); 
+        const avatarURL = path.join('avatars', filename); 
 
         await User.findByIdAndUpdate(_id, { avatarURL });
 
         res.status(200).json({ avatarURL });
     } catch (error) {
-        console.error(error);
         await fs.unlink(uploadPath);
         throw error;
     }
 };
-
 
 module.exports = {
     register: ctrlWrapper(register),
