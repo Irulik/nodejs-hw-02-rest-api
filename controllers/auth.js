@@ -29,8 +29,7 @@ const register = async (req, res) => {
 
     res.status(201).json({
         email: newUser.email,
-        subscription: newUser.subscription,
-    
+        subscription: newUser.subscription, avatarURL    
  })    
 }
 
@@ -90,17 +89,17 @@ const subscription = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
     const { _id } = req.user;
-    const { path: uploadPath, originalname } = req.file;
-    const filename = `${_id}_${originalname}`;  
+    const { path: uploadPath, originalname } = req.file;    
+    const filename = `${_id}_${originalname}`;
     
-    try { 
+    try {
         const resultUpload = path.join(avatarsDir, filename);
 
         const originalAvatar = await Jimp.read(uploadPath);
-        originalAvatar.resize(250, 250).write(resultUpload); 
-        await fs.unlink(uploadPath); 
+        originalAvatar.resize(250, 250).write(resultUpload);
+        await fs.unlink(uploadPath);
 
-        const avatarURL = path.join('avatars', filename); 
+        const avatarURL = path.join('avatars', filename);
 
         await User.findByIdAndUpdate(_id, { avatarURL });
 
@@ -110,6 +109,8 @@ const updateAvatar = async (req, res) => {
         throw error;
     }
 };
+
+
 
 module.exports = {
     register: ctrlWrapper(register),
