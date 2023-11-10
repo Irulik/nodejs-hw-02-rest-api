@@ -89,6 +89,11 @@ const subscription = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
     const { _id } = req.user;
+
+     if (!req.file) {
+        return res.status(400).json({ error: 'Upload the file to update your avatar.' });
+    }
+
     const { path: uploadPath, originalname } = req.file;    
     const filename = `${_id}_${originalname}`;
     
